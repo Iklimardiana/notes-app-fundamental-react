@@ -1,9 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { showFormattedDate } from "../utils";
-import { HiOutlineTrash, HiArrowNarrowLeft } from "react-icons/hi";
-import { BiArchiveIn, BiArchiveOut } from "react-icons/bi";
-import { Link } from "react-router-dom";
+/* eslint-disable react/button-has-type */
+/* eslint-disable react/jsx-curly-brace-presence */
+/* eslint-disable react/jsx-one-expression-per-line */
+import React from 'react';
+import PropTypes from 'prop-types';
+import { showFormattedDate } from '../utils';
+import { HiOutlineTrash, HiArrowNarrowLeft } from 'react-icons/hi';
+import { BiArchiveIn, BiArchiveOut } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
 
 function NoteDetail({
   title,
@@ -17,7 +20,7 @@ function NoteDetail({
   return (
     <div className="detail-page">
       <p>
-        <Link to={"/"} className="back-button link">
+        <Link to={'/'} className="back-button link">
           <HiArrowNarrowLeft /> Back
         </Link>
       </p>

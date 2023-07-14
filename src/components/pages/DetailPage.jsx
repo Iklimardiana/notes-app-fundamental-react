@@ -1,8 +1,14 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import NoteDetail from "../NoteDetail";
-import { getNote, archiveNote, unarchiveNote, deleteNote, getActiveNotes } from "../../utils/local-data";
-import PropTypes from "prop-types";
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import NoteDetail from '../NoteDetail';
+import {
+  getNote,
+  archiveNote,
+  unarchiveNote,
+  deleteNote,
+  getActiveNotes,
+} from '../../utils/local-data';
+import PropTypes from 'prop-types';
 
 function DetailPageWrapper() {
   const { id } = useParams();
@@ -33,7 +39,7 @@ class DetailPage extends React.Component {
   onDeleteNote = () => {
     const { id } = this.props;
     deleteNote(id);
-  }
+  };
 
   render() {
     if (this.state.note === null) {
@@ -42,11 +48,11 @@ class DetailPage extends React.Component {
 
     return (
       <section>
-        <NoteDetail 
-        {...this.state.note} 
-        onArchive={this.archivedNote}
-        onUnarchive={this.unarchivedNote}
-        onDelete={this.onDeleteNote}
+        <NoteDetail
+          {...this.state.note}
+          onArchive={this.archivedNote}
+          onUnarchive={this.unarchivedNote}
+          onDelete={this.onDeleteNote}
         />
       </section>
     );
@@ -55,6 +61,6 @@ class DetailPage extends React.Component {
 
 DetailPage.propTypes = {
   id: PropTypes.string.isRequired,
-}
+};
 
 export default DetailPageWrapper;

@@ -1,15 +1,18 @@
-import React from "react";
-import { HiCheck, HiX } from "react-icons/hi";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+/* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable react/no-access-state-in-setstate */
+/* eslint-disable react/button-has-type */
+import React from 'react';
+import { HiCheck, HiX } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 class NoteInput extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      title: "",
-      body: "",
+      title: '',
+      body: '',
       maxCharacter: 50,
     };
 
@@ -39,8 +42,8 @@ class NoteInput extends React.Component {
 
     this.setState(() => {
       return {
-        title: "",
-        body: "",
+        title: '',
+        body: '',
       };
     });
   }
@@ -51,7 +54,7 @@ class NoteInput extends React.Component {
         <form onSubmit={this.onSubmitEventHandler} required>
           <div className="add-new-page__input__title__char-limit">
             <p>
-              Characters remaining:{" "}
+              Characters remaining:{' '}
               {this.state.maxCharacter - this.state.title.length}
             </p>
           </div>
@@ -71,10 +74,10 @@ class NoteInput extends React.Component {
             value={this.state.body}
             onChange={this.onBodyChangeEventHandler}
             required
-          ></textarea>
+          />
           <div className="add-new-page__action">
-            <button className="action" >
-              <Link to={"/active-notes"} className="action">
+            <button className="action">
+              <Link to="/active-notes" className="action">
                 <HiX />
               </Link>
             </button>
@@ -90,6 +93,6 @@ class NoteInput extends React.Component {
 
 NoteInput.propTypes = {
   addNote: PropTypes.func.isRequired,
-}
+};
 
 export default NoteInput;

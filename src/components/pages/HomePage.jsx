@@ -1,50 +1,67 @@
-import React from "react";
-import NoteList from "../NoteList";
-import SearchBar from "../SearchBar";
-import { getActiveNotes } from "../../utils/local-data";
-import { HiPlus } from "react-icons/hi";
-import { Link } from "react-router-dom";
+/* eslint-disable spaced-comment */
+import React, { useState, useEffect } from 'react';
+import NoteList from '../NoteList';
+import SearchBar from '../SearchBar';
+import useInput from '../hooks/useInput';
+import { getActiveNotes } from '../../utils/api';
+import { HiPlus } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
-class HomePage extends React.Component {
-  constructor(props) {
-    super(props);
+function HomePage() {
+  const [notes, setNotes] = useState([]); //all notes
+  const [initNotes, setInitNotes] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [filteredNotes, setFilteredNotes] = useState([]); //filtered notes
+  const [search, setSearch] = useInput('');
 
-    const notes = getActiveNotes();
+  const activeNotesHandler = async () => {
+    try {
+      setLoading(true);
+      const { error, data } = await getActiveNotes();
 
-    this.state = {
-      notes: notes,
-      keyword: '',
-    };
-
-    this.onKeywordChangeHandler = this.onKeywordChangeHandler.bind(this);
-  }
-
-  onKeywordChangeHandler(keyword) {
-    this.setState(() => {
-      return {
-        keyword,
+      if (!error) {
+        setNotes(data);
+        setInitNotes(true);
       }
-    });
-  }
+    } catch (error) {
+      throw new Error(`ErrorL ${error}`);
+    }
+    setLoading(false);
+  };
 
-  render() {
-    const notes = this.state.notes.filter((note) => {
-      return note.title.toLowerCase().includes(
-        this.state.keyword.toLowerCase()
-      );
-    });
+  useEffect(() => {
+    if (!initNotes) {
+      activeNotesHandler();
+    }
 
-    return (
-      <section>
-        <h2 style={{ textAlign: "center" }}>Active Notes</h2>
-        <SearchBar keyword={this.state.keyword} keywordChange={this.onKeywordChangeHandler}/>
-        <NoteList notes={notes} />
-        <div className="homepage__action">
-          <Link className="action" to="/add"><HiPlus/></ Link>
-        </div>
-      </section>
-    );
-  }
+    if (initNotes) {
+      let tempNotes = [...notes];
+      if (search !== '') {
+        tempNotes = tempNotes.filter((note) =>
+          note.title.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      setFilteredNotes(tempNotes);
+    }
+  }, [search]);
+
+  return (
+    <section>
+      <h2 style={{ textAlign: 'center' }}>Active Notes</h2>
+      <SearchBar keyword={title} keywordChange={setSearch} />
+      {filteredNotes.length > 0 && !loading ? (
+        <NoteList notes={filteredNotes} />
+      ) : (
+        ''
+      )}
+      {notes.length === 0 && !loading ? <p>Catatan kosong</p> : ''}
+      <div className="homepage__action">
+        <Link className="action" to="/add">
+          <HiPlus />
+        </Link>
+      </div>
+    </section>
+  );
 }
 
 export default HomePage;

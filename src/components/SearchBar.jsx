@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 function SearchBar({ keyword, keywordChange }) {
   return (
@@ -7,6 +7,7 @@ function SearchBar({ keyword, keywordChange }) {
       <input
         type="text"
         placeholder="Search Note By Title..."
+        name="search"
         value={keyword}
         onChange={(event) => keywordChange(event.target.value)}
       />

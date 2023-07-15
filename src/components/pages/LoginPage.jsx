@@ -15,7 +15,7 @@ function LoginPage() {
     if (!error) {
       putAccessToken(data.accessToken);
       setAuth(data);
-      navigate('/active-notes');
+      navigate('/');
     }
   };
 

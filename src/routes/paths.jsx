@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
 import MiddlewareRoute from '../middleware/MiddlewareRoute';
 import AddPage from '../components/pages/AddPage';
 import ArchivePage from '../components/pages/ArchivePage';
@@ -9,7 +8,7 @@ import NotFoundPage from '../components/NotFound';
 import RegisterPage from '../components/pages/RegisterPage';
 import LoginPage from '../components/pages/LoginPage';
 
-export const paths = [
+const paths = [
   {
     path: '/',
     element: (
@@ -71,3 +70,5 @@ export const paths = [
     ),
   },
 ];
+
+export default paths;

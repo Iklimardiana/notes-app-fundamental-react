@@ -9,13 +9,8 @@ import {
   ThemeContext,
 } from './contexts/LocaleContext';
 import { getUserLogged } from './utils/api';
-import { paths } from './routes/paths';
-import HomePage from './components/pages/HomePage';
+import paths from './routes/paths';
 import Navigation from './components/Navigation';
-import AddPage from './components/pages/AddPage';
-import DetailPageWrapper from './components/pages/DetailPage';
-import ArchivePage from './components/pages/ArchivePage';
-import NotFoundPage from './components/pages/NotFoundPage';
 
 function App() {
   const [auth, setAuth] = useState(null);
@@ -33,9 +28,6 @@ function App() {
 
   useEffect(() => {
     initDataUser();
-    // if (theme === 'light') {
-    //   document.documentElement.setAttribute('data-theme', 'light');
-    // }
   }, []);
 
   const authContextValue = useMemo(
@@ -63,9 +55,9 @@ function App() {
   );
 
   return (
-    <AuthContext.Provider value={authContextValue}>
+    <ThemeContext.Provider value={themeContextValue}>
       <LocaleContext.Provider value={localeContextValue}>
-        <ThemeContext.Provider value={themeContextValue}>
+        <AuthContext.Provider value={authContextValue}>
           <div className="app-container">
             <header>
               <h2>
@@ -83,9 +75,9 @@ function App() {
               </Routes>
             </main>
           </div>
-        </ThemeContext.Provider>
+        </AuthContext.Provider>
       </LocaleContext.Provider>
-    </AuthContext.Provider>
+    </ThemeContext.Provider>
   );
 }
 

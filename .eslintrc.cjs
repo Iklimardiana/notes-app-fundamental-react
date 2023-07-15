@@ -29,5 +29,11 @@ module.exports = {
     'comma-dangle': 'off',
     'implicit-arrow-linebreak': 'off',
     'function-paren-newline': 'off',
+    'react/no-array-index-key': 'off',
+    'react/jsx-no-useless-fragment': 'off',
+    'react/forbid-prop-types': 'off',
+    'object-curly-newline': 'off',
+    'no-shadow': 'off',
+    'react/jsx-no-bind': 'off',
   },
 };

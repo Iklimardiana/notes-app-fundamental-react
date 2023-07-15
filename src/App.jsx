@@ -1,6 +1,3 @@
-/* eslint-disable object-curly-newline */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable comma-dangle */
 import React, { useState, useMemo, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import {
@@ -13,7 +10,7 @@ import paths from './routes/paths';
 import Navigation from './components/Navigation';
 
 function App() {
-  const [auth, setAuth] = useState(null);
+  const [authUser, setAuth] = useState(null);
   const [locale, setLocale] = useState(
     localStorage.getItem('localization') || 'id'
   );
@@ -32,10 +29,10 @@ function App() {
 
   const authContextValue = useMemo(
     () => ({
-      auth,
+      authUser,
       setAuth,
     }),
-    [auth]
+    [authUser]
   );
 
   const localeContextValue = useMemo(

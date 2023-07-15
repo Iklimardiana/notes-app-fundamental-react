@@ -7,7 +7,7 @@ function NoteItemBody({ title, createdAt, body, id }) {
   return (
     <div className="note-item">
       <h3 className="note-item__title">
-        <Link to={`/note/${id}`} className="link">
+        <Link to={`/notes/${id}`} className="link">
           {title}
         </Link>
       </h3>

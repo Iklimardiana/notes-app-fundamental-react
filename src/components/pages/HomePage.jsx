@@ -1,59 +1,41 @@
+/* eslint-disable no-shadow */
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable spaced-comment */
 import React, { useState, useEffect } from 'react';
 import NoteList from '../NoteList';
 import SearchBar from '../SearchBar';
-import useInput from '../hooks/useInput';
 import { getActiveNotes } from '../../utils/api';
 import { HiPlus } from 'react-icons/hi';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 function HomePage() {
-  const [notes, setNotes] = useState([]); //all notes
-  const [initNotes, setInitNotes] = useState(false);
+  const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filteredNotes, setFilteredNotes] = useState([]); //filtered notes
-  const [search, setSearch] = useInput('');
-
-  const activeNotesHandler = async () => {
-    try {
-      setLoading(true);
-      const { error, data } = await getActiveNotes();
-
-      if (!error) {
-        setNotes(data);
-        setInitNotes(true);
-      }
-    } catch (error) {
-      throw new Error(`ErrorL ${error}`);
-    }
-    setLoading(false);
-  };
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [keyword, setKeyword] = useState(() => {
+    return searchParams.get('keyword') || '';
+  });
 
   useEffect(() => {
-    if (!initNotes) {
-      activeNotesHandler();
-    }
+    getActiveNotes().then(({ data }) => {
+      setNotes(data);
+    });
+  }, []);
 
-    if (initNotes) {
-      let tempNotes = [...notes];
-      if (search !== '') {
-        tempNotes = tempNotes.filter((note) =>
-          note.title.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      setFilteredNotes(tempNotes);
-    }
-  }, [search]);
+  function onKeywordChandeHandler(keyword) {
+    setKeyword(keyword);
+    setSearchParams({ keyword });
+  }
+
+  const filteredNotes = notes.filter((note) => {
+    return note.title.toLowerCase().includes(keyword.toLowerCase());
+  });
 
   return (
     <section>
       <h2 style={{ textAlign: 'center' }}>Active Notes</h2>
-      <SearchBar keyword={title} keywordChange={setSearch} />
-      {filteredNotes.length > 0 && !loading ? (
-        <NoteList notes={filteredNotes} />
-      ) : (
-        ''
-      )}
+      <SearchBar keyword={keyword} keywordChange={onKeywordChandeHandler} />
+      <NoteList notes={filteredNotes} />
       {notes.length === 0 && !loading ? <p>Catatan kosong</p> : ''}
       <div className="homepage__action">
         <Link className="action" to="/add">

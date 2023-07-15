@@ -1,48 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import NoteList from '../NoteList';
-import { getArchivedNotes } from '../../utils/local-data';
+import { getArchivedNotes } from '../../utils/api';
 import SearchBar from '../SearchBar';
+import { useSearchParams } from 'react-router-dom';
 
-class ArchivePage extends React.Component {
-  constructor(props) {
-    super(props);
+function ArchivePage() {
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [keyword, setKeyword] = useState(() => {
+    return searchParams.get('keyword') || '';
+  });
 
-    const notes = getArchivedNotes();
-
-    this.state = {
-      notes: notes,
-      keyword: '',
-    };
-
-    this.onKeywordChangeHandler = this.onKeywordChangeHandler.bind(this);
-  }
-
-  onKeywordChangeHandler(keyword) {
-    this.setState(() => {
-      return {
-        keyword,
-      };
+  useEffect(() => {
+    getArchivedNotes().then(({ data }) => {
+      setNotes(data);
     });
+  }, []);
+
+  function onKeywordChangeHandler(keyword) {
+    setKeyword(keyword);
+    setSearchParams({ keyword });
   }
 
-  render() {
-    const notes = this.state.notes.filter((note) => {
-      return note.title
-        .toLowerCase()
-        .includes(this.state.keyword.toLowerCase());
-    });
+  const filteredNotes = notes.filter((note) => {
+    return note.title.toLowerCase().includes(keyword.toLowerCase());
+  });
 
-    return (
-      <section>
-        <h2 className="title-page">Archive Notes</h2>
-        <SearchBar
-          keyword={this.state.keyword}
-          keywordChange={this.onKeywordChangeHandler}
-        />
-        <NoteList notes={notes} />
-      </section>
-    );
-  }
+  return (
+    <section>
+      <h2 className="title-page">Archive Notes</h2>
+      <SearchBar keyword={keyword} keywordChange={onKeywordChangeHandler} />
+      <NoteList notes={filteredNotes} />
+      {notes.length === 0 && !loading ? <p>Catatan kosong</p> : ''}
+    </section>
+  );
 }
 
 export default ArchivePage;

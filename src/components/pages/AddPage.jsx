@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 import React from 'react';
-import { addNote } from '../../utils/local-data';
+import { addNotes } from '../../utils/api';
 import NoteInput from '../NoteInput';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ function AddPage() {
   const navigate = useNavigate();
 
   function onAddNoteHandler(note) {
-    addNote(note);
+    addNotes(note);
     navigate('/');
   }
 

@@ -1,66 +1,33 @@
-import React from 'react';
+/* eslint-disable no-shadow */
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NoteDetail from '../NoteDetail';
-import {
-  getNote,
-  archiveNote,
-  unarchiveNote,
-  deleteNote,
-  getActiveNotes,
-} from '../../utils/local-data';
-import PropTypes from 'prop-types';
+import { getDetailNote } from '../../utils/api';
 
-function DetailPageWrapper() {
+function DetailPage() {
   const { id } = useParams();
-  return <DetailPage id={id} />;
-}
+  const [data, setData] = useState(null);
 
-class DetailPage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      note: getNote(props.id),
-    };
-  }
-
-  archivedNote = () => {
-    const { id } = this.props;
-    archiveNote(id);
-    this.setState({ note: getNote(id) });
-  };
-
-  unarchivedNote = () => {
-    const { id } = this.props;
-    unarchiveNote(id);
-    this.setState({ note: getNote(id) });
-  };
-
-  onDeleteNote = () => {
-    const { id } = this.props;
-    deleteNote(id);
-  };
-
-  render() {
-    if (this.state.note === null) {
-      return <p>Note is not found!</p>;
+  const getDetailNoteHandler = async () => {
+    try {
+      const { error, data } = await getDetailNote(id);
+      if (!error) {
+        setData(data);
+      }
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
     }
+  };
 
-    return (
-      <section>
-        <NoteDetail
-          {...this.state.note}
-          onArchive={this.archivedNote}
-          onUnarchive={this.unarchivedNote}
-          onDelete={this.onDeleteNote}
-        />
-      </section>
-    );
-  }
+  useEffect(() => {
+    getDetailNoteHandler();
+  }, []);
+
+  return (
+    <section>
+      {data ? <NoteDetail note={data} /> : <p>Tidak ada data</p>}
+    </section>
+  );
 }
 
-DetailPage.propTypes = {
-  id: PropTypes.string.isRequired,
-};
-
-export default DetailPageWrapper;
+export default DetailPage;

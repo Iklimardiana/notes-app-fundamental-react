@@ -2,7 +2,7 @@ import React from 'react';
 import MiddlewareRoute from '../middleware/MiddlewareRoute';
 import AddPage from '../components/pages/AddPage';
 import ArchivePage from '../components/pages/ArchivePage';
-import DetailPageWrapper from '../components/pages/DetailPage';
+import DetailPage from '../components/pages/DetailPage';
 import HomePage from '../components/pages/HomePage';
 import NotFoundPage from '../components/NotFound';
 import RegisterPage from '../components/pages/RegisterPage';
@@ -18,7 +18,7 @@ const paths = [
     ),
   },
   {
-    path: '/archived-notes',
+    path: '/notes/archived',
     element: (
       <MiddlewareRoute middleware="auth">
         <ArchivePage />
@@ -42,10 +42,10 @@ const paths = [
     ),
   },
   {
-    path: '/note/:id',
+    path: '/notes/:id',
     element: (
       <MiddlewareRoute middleware="auth">
-        <DetailPageWrapper />
+        <DetailPage />
       </MiddlewareRoute>
     ),
   },

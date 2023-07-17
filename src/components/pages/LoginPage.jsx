@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import useInput from '../hooks/useInput';
-import { AuthContext } from '../../contexts/LocaleContext';
+import { AuthContext } from '../../contexts/AllContext';
 import { login, putAccessToken } from '../../utils/api';
 import { useNavigate, Link } from 'react-router-dom';
 

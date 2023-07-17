@@ -1,25 +1,29 @@
-/* eslint-disable no-shadow */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable spaced-comment */
 import React, { useState, useEffect } from 'react';
 import NoteList from '../NoteList';
 import SearchBar from '../SearchBar';
 import { getActiveNotes } from '../../utils/api';
 import { HiPlus } from 'react-icons/hi';
 import { Link, useSearchParams } from 'react-router-dom';
+import Loading from '../Loading';
+import { useLanguage } from '../hooks/useLanguage';
 
 function HomePage() {
   const [notes, setNotes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [keyword, setKeyword] = useState(() => {
     return searchParams.get('keyword') || '';
   });
+  const text = useLanguage('note');
 
   useEffect(() => {
-    getActiveNotes().then(({ data }) => {
-      setNotes(data);
-    });
+    getActiveNotes()
+      .then(({ data }) => {
+        setNotes(data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   function onKeywordChandeHandler(keyword) {
@@ -33,14 +37,25 @@ function HomePage() {
 
   return (
     <section>
-      <h2 style={{ textAlign: 'center' }}>Active Notes</h2>
+      <h2 style={{ textAlign: 'center' }}>{text.active.title}</h2>
       <SearchBar keyword={keyword} keywordChange={onKeywordChandeHandler} />
-      <NoteList notes={filteredNotes} />
-      {notes.length === 0 && !loading ? <p>Catatan kosong</p> : ''}
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          {notes.length === 0 ? (
+            <p>{text.active.empty}</p>
+          ) : (
+            <NoteList notes={filteredNotes} />
+          )}
+        </>
+      )}
       <div className="homepage__action">
-        <Link className="action" to="/add">
-          <HiPlus />
-        </Link>
+        <button type="button" className="action" title={text.add}>
+          <Link className="action" to="/add">
+            <HiPlus title={text.add} />
+          </Link>
+        </button>
       </div>
     </section>
   );

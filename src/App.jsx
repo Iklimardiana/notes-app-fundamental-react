@@ -4,16 +4,14 @@ import {
   AuthContext,
   LocaleContext,
   ThemeContext,
-} from './contexts/LocaleContext';
+} from './contexts/AllContext';
 import { getUserLogged } from './utils/api';
 import paths from './routes/paths';
 import Navigation from './components/Navigation';
 
 function App() {
   const [authUser, setAuth] = useState(null);
-  const [locale, setLocale] = useState(
-    localStorage.getItem('localization') || 'id'
-  );
+  const [locale, setLocale] = useState(localStorage.getItem('locale') || 'id');
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
   const initDataUser = async () => {
@@ -21,6 +19,11 @@ function App() {
     if (!error) {
       setAuth(data);
     }
+  };
+
+  const toggleLanguage = () => {
+    localStorage.setItem('locale', locale === 'id' ? 'en' : 'id');
+    setLocale((prevState) => (prevState === 'id' ? 'en' : 'id'));
   };
 
   useEffect(() => {
@@ -38,7 +41,7 @@ function App() {
   const localeContextValue = useMemo(
     () => ({
       locale,
-      setLocale,
+      toggleLanguage,
     }),
     [locale]
   );
@@ -57,11 +60,11 @@ function App() {
         <AuthContext.Provider value={authContextValue}>
           <div className="app-container">
             <header>
-              <h2>
+              {/* <h2>
                 <Link to="/" style={{ textDecoration: 'none' }}>
                   Note App
                 </Link>
-              </h2>
+              </h2> */}
               <Navigation />
             </header>
             <main>

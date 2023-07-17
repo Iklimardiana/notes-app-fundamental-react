@@ -35,5 +35,8 @@ module.exports = {
     'object-curly-newline': 'off',
     'no-shadow': 'off',
     'react/jsx-no-bind': 'off',
+    'react/jsx-one-expression-per-line': 'off',
+    'react/jsx-curly-brace-presence': 'off',
+    'react/no-access-state-in-setstate': 'off',
   },
 };

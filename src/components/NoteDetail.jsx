@@ -1,7 +1,3 @@
-/* eslint-disable react/button-has-type */
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable react/jsx-one-expression-per-line */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { showFormattedDate } from '../utils/index';
@@ -9,8 +5,14 @@ import { HiOutlineTrash, HiArrowNarrowLeft } from 'react-icons/hi';
 import { BiArchiveIn, BiArchiveOut } from 'react-icons/bi';
 import { Link, useNavigate } from 'react-router-dom';
 import { archiveNote, unarchiveNote, deleteNote } from '../utils/api';
+import { LocaleContext } from '../contexts/AllContext';
+import { useLanguage } from './hooks/useLanguage';
 
 function NoteDetail({ note }) {
+  const { locale } = React.useContext(LocaleContext);
+  const text = useLanguage('detail');
+  const language = locale === 'en' ? 'en' : 'id';
+
   if (!note) {
     return <p>tidak ada</p>;
   }
@@ -20,7 +22,7 @@ function NoteDetail({ note }) {
   const handleArchive = async (id) => {
     try {
       await archiveNote(id);
-      navigate('/active-notes');
+      navigate('/notes/archived');
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
@@ -29,7 +31,7 @@ function NoteDetail({ note }) {
   const handleUnarchive = async (id) => {
     try {
       await unarchiveNote(id);
-      navigate('/archived-notes');
+      navigate('/active-notes');
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
@@ -48,25 +50,40 @@ function NoteDetail({ note }) {
     <div className="detail-page">
       <p>
         <Link to={'/'} className="back-button link">
-          <HiArrowNarrowLeft /> Back
+          <HiArrowNarrowLeft />
         </Link>
       </p>
       <p className="detail-page__title">{title}</p>
       <p className="detail-page__createdAt">
-        Created At: {showFormattedDate(createdAt)}
+        {text.date} : {showFormattedDate(createdAt, language)}
       </p>
       <p className="detail-page__body">{body}</p>
       <div className="detail-page__action">
         {archived ? (
-          <button className="action" onClick={() => handleUnarchive(note.id)}>
+          <button
+            type="button"
+            title={text.archive}
+            className="action"
+            onClick={() => handleUnarchive(note.id)}
+          >
             <BiArchiveOut />
           </button>
         ) : (
-          <button className="action" onClick={() => handleArchive(note.id)}>
+          <button
+            type="button"
+            title={text.unArchive}
+            className="action"
+            onClick={() => handleArchive(note.id)}
+          >
             <BiArchiveIn />
           </button>
         )}
-        <button className="action" onClick={() => handleDelete(note.id)}>
+        <button
+          type="button"
+          title={text.delete}
+          className="action"
+          onClick={() => handleDelete(note.id)}
+        >
           <HiOutlineTrash />
         </button>
       </div>

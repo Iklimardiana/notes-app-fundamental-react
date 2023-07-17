@@ -1,95 +1,76 @@
-import React from "react";
-import { HiCheck, HiX } from "react-icons/hi";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+import React, { useState, useContext } from 'react';
+import { HiCheck, HiX } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { useLanguage } from './hooks/useLanguage';
 
-class NoteInput extends React.Component {
-  constructor(props) {
-    super(props);
+function NoteInput({ addNote }) {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [maxCharacter] = useState(50);
+  const text = useLanguage('add');
 
-    this.state = {
-      title: "",
-      body: "",
-      maxCharacter: 50,
-    };
+  const onTitleChangeEventHandler = (event) => {
+    const input = event.target.value.slice(0, maxCharacter);
+    setTitle(input);
+  };
 
-    this.onTitleChangeEventHandler = this.onTitleChangeEventHandler.bind(this);
-    this.onBodyChangeEventHandler = this.onBodyChangeEventHandler.bind(this);
-    this.onSubmitEventHandler = this.onSubmitEventHandler.bind(this);
-  }
+  const onBodyChangeEventHandler = (event) => {
+    setBody(event.target.value);
+  };
 
-  onTitleChangeEventHandler(event) {
-    const input = event.target.value.slice(0, this.state.maxCharacter);
-    this.setState({
-      title: input,
-    });
-  }
-
-  onBodyChangeEventHandler(event) {
-    this.setState(() => {
-      return {
-        body: event.target.value,
-      };
-    });
-  }
-
-  onSubmitEventHandler(event) {
+  const onSubmitEventHandler = (event) => {
     event.preventDefault();
-    this.props.addNote(this.state);
-
-    this.setState(() => {
-      return {
-        title: "",
-        body: "",
-      };
+    addNote({
+      title,
+      body,
     });
-  }
+    setTitle('');
+    setBody('');
+  };
 
-  render() {
-    return (
-      <div className="add-new-page__input">
-        <form onSubmit={this.onSubmitEventHandler} required>
-          <div className="add-new-page__input__title__char-limit">
-            <p>
-              Characters remaining:{" "}
-              {this.state.maxCharacter - this.state.title.length}
-            </p>
-          </div>
-          <input
-            className="add-new-page__input__title"
-            type="text"
-            placeholder="Input Title ..."
-            value={this.state.title}
-            onChange={this.onTitleChangeEventHandler}
-            required
-          />
-          <textarea
-            className="add-new-page__input__body"
-            id="height"
-            type="text"
-            placeholder="Input Notes ..."
-            value={this.state.body}
-            onChange={this.onBodyChangeEventHandler}
-            required
-          ></textarea>
-          <div className="add-new-page__action">
-            <button className="action" >
-              <Link to={"/active-notes"} className="action">
-                <HiX />
-              </Link>
-            </button>
-            <button className="action" type="submit">
-              <HiCheck />
-            </button>
-          </div>
-        </form>
-      </div>
-    );
-  }
+  return (
+    <div className="add-new-page__input">
+      <form onSubmit={onSubmitEventHandler} required>
+        <div className="add-new-page__input__title__char-limit">
+          <p>
+            {text.character}: {maxCharacter - title.length}
+          </p>
+        </div>
+        <input
+          className="add-new-page__input__title"
+          type="text"
+          placeholder={text.placeholderTitle}
+          value={title}
+          onChange={onTitleChangeEventHandler}
+          required
+        />
+        <textarea
+          className="add-new-page__input__body"
+          id="height"
+          type="text"
+          placeholder={text.placeholderBody}
+          value={body}
+          onChange={onBodyChangeEventHandler}
+          required
+        />
+        <div className="add-new-page__action">
+          <button type="button" className="action" title={text.cancelButton}>
+            <Link to="/active-notes" className="action">
+              <HiX />
+            </Link>
+          </button>
+          <button className="action" type="submit" title={text.addButton}>
+            <HiCheck />
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 NoteInput.propTypes = {
   addNote: PropTypes.func.isRequired,
-}
+};
 
 export default NoteInput;

@@ -1,14 +1,13 @@
 import React from 'react';
 import { useLanguage } from './hooks/useLanguage';
 
-function NotFound() {
+function Loading() {
   const text = useLanguage('app');
   return (
-    <div className="not-found">
-      <h1>Oops! :( </h1>
-      <h2>404 - {text.notFound}</h2>
+    <div className="loading">
+      <p>{text.msg.loading}</p>
     </div>
   );
 }
 
-export default NotFound;
+export default Loading;

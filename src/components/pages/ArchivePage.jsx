@@ -1,45 +1,56 @@
-import React from "react";
-import NoteList from "../NoteList";
-import { getArchivedNotes } from "../../utils/local-data";
-import SearchBar from "../SearchBar";
+import React, { useState, useEffect } from 'react';
+import NoteList from '../NoteList';
+import { getArchivedNotes } from '../../utils/api';
+import SearchBar from '../SearchBar';
+import { useSearchParams } from 'react-router-dom';
+import Loading from '../Loading';
+import { useLanguage } from '../hooks/useLanguage';
 
-class ArchivePage extends React.Component {
-  constructor(props) {
-    super(props);
+function ArchivePage() {
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [keyword, setKeyword] = useState(() => {
+    return searchParams.get('keyword') || '';
+  });
+  const text = useLanguage('note');
 
-    const notes = getArchivedNotes();
+  useEffect(() => {
+    getArchivedNotes()
+      .then(({ data }) => {
+        setNotes(data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
-    this.state = {
-      notes: notes,
-      keyword: '',
-    };
-
-    this.onKeywordChangeHandler = this.onKeywordChangeHandler.bind(this);
+  function onKeywordChangeHandler(keyword) {
+    setKeyword(keyword);
+    setSearchParams({ keyword });
   }
 
-  onKeywordChangeHandler(keyword) {
-    this.setState(() => {
-      return {
-        keyword,
-      }
-    });
-  }
+  const filteredNotes = notes.filter((note) => {
+    return note.title.toLowerCase().includes(keyword.toLowerCase());
+  });
 
-  render() {
-    const notes = this.state.notes.filter((note) => {
-      return note.title.toLowerCase().includes(
-        this.state.keyword.toLowerCase()
-      );
-    });
-
-    return (
-      <section>
-        <h2 className="title-page">Archive Notes</h2>
-        <SearchBar keyword={this.state.keyword} keywordChange={this.onKeywordChangeHandler}/>
-        <NoteList notes={notes} />
-      </section>
-    );
-  }
+  return (
+    <section>
+      <h2 className="title-page">{text.archive.title}</h2>
+      <SearchBar keyword={keyword} keywordChange={onKeywordChangeHandler} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          {notes.length === 0 ? (
+            <p>{text.archive.empty}</p>
+          ) : (
+            <NoteList notes={filteredNotes} />
+          )}
+        </>
+      )}
+    </section>
+  );
 }
 
 export default ArchivePage;

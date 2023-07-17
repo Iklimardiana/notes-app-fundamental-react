@@ -1,22 +1,24 @@
-import React from "react";
-import { addNote } from '../../utils/local-data';
+import React from 'react';
+import { addNotes } from '../../utils/api';
 import NoteInput from '../NoteInput';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../hooks/useLanguage';
 
 function AddPage() {
-    const navigate = useNavigate();
+  const text = useLanguage('add');
+  const navigate = useNavigate();
 
-    function onAddNoteHandler(note) {
-        addNote(note);
-        navigate('/');
-    }
+  function onAddNoteHandler(note) {
+    addNotes(note);
+    navigate('/');
+  }
 
-    return (
-        <section>
-            <h1 className="title-page">Add Note</h1>
-            <NoteInput addNote={onAddNoteHandler} />
-        </section>
-    )
+  return (
+    <section>
+      <h1 className="title-page">{text.title}</h1>
+      <NoteInput addNote={onAddNoteHandler} />
+    </section>
+  );
 }
 
 export default AddPage;

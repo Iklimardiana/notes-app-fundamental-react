@@ -1,50 +1,64 @@
-import React from "react";
-import NoteList from "../NoteList";
-import SearchBar from "../SearchBar";
-import { getActiveNotes } from "../../utils/local-data";
-import { HiPlus } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import NoteList from '../NoteList';
+import SearchBar from '../SearchBar';
+import { getActiveNotes } from '../../utils/api';
+import { HiPlus } from 'react-icons/hi';
+import { Link, useSearchParams } from 'react-router-dom';
+import Loading from '../Loading';
+import { useLanguage } from '../hooks/useLanguage';
 
-class HomePage extends React.Component {
-  constructor(props) {
-    super(props);
+function HomePage() {
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [keyword, setKeyword] = useState(() => {
+    return searchParams.get('keyword') || '';
+  });
+  const text = useLanguage('note');
 
-    const notes = getActiveNotes();
+  useEffect(() => {
+    getActiveNotes()
+      .then(({ data }) => {
+        setNotes(data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
-    this.state = {
-      notes: notes,
-      keyword: '',
-    };
-
-    this.onKeywordChangeHandler = this.onKeywordChangeHandler.bind(this);
+  function onKeywordChandeHandler(keyword) {
+    setKeyword(keyword);
+    setSearchParams({ keyword });
   }
 
-  onKeywordChangeHandler(keyword) {
-    this.setState(() => {
-      return {
-        keyword,
-      }
-    });
-  }
+  const filteredNotes = notes.filter((note) => {
+    return note.title.toLowerCase().includes(keyword.toLowerCase());
+  });
 
-  render() {
-    const notes = this.state.notes.filter((note) => {
-      return note.title.toLowerCase().includes(
-        this.state.keyword.toLowerCase()
-      );
-    });
-
-    return (
-      <section>
-        <h2 style={{ textAlign: "center" }}>Active Notes</h2>
-        <SearchBar keyword={this.state.keyword} keywordChange={this.onKeywordChangeHandler}/>
-        <NoteList notes={notes} />
-        <div className="homepage__action">
-          <Link className="action" to="/add"><HiPlus/></ Link>
-        </div>
-      </section>
-    );
-  }
+  return (
+    <section>
+      <h2 style={{ textAlign: 'center' }}>{text.active.title}</h2>
+      <SearchBar keyword={keyword} keywordChange={onKeywordChandeHandler} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          {notes.length === 0 ? (
+            <p>{text.active.empty}</p>
+          ) : (
+            <NoteList notes={filteredNotes} />
+          )}
+        </>
+      )}
+      <div className="homepage__action">
+        <button type="button" className="action" title={text.add}>
+          <Link className="action" to="/add">
+            <HiPlus title={text.add} />
+          </Link>
+        </button>
+      </div>
+    </section>
+  );
 }
 
 export default HomePage;
